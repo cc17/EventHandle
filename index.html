@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script type="text/javascript">
+	/*eventHandle*/
+	var EventHandle = function(){
+		this._events = [];
+	};
+	EventHandle.prototype = {
+		constructor:EventHandle,
+		on:function(evtName,fn,context){
+			if(!this._events[evtName]){
+				this._events[evtName] = [];
+			}
+			this._events[evtName].push({
+				name:evtName,
+				fn:fn,
+				context: context || null
+			});
+		},
+		once:function(evtName,fn,context){
+			var me = this;
+			var delegate = function(){
+				fn.call(context);
+				me.remove(evtName);
+			};
+			this.on(evtName,delegate,context);
+		},
+		fire:function(evtName){
+			this._events[evtName] && this._events[evtName].forEach(function(item){
+				item.fn.call(item.context);
+			});
+		},
+		remove:function(evtName){
+			for(var key in this._events){
+				if(key === evtName){
+					delete this._events[key];
+				}
+			}
+		}
+	};
+
+	var obj = {};
+	var instance = new EventHandle();
+	instance.on('click',function(){
+		alert('sss');
+	});
+	instance.once('click',function(){
+		alert('sss');
+	});
+	instance.fire('click');
+	setTimeout(function(){
+		instance.fire('click');
+	},1000);
+</script>
+</body>
+</html>
