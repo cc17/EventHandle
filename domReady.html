@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>sdfsf
+<iframe src="test.php" defer=""></iframe>
+<script type="text/javascript">
+	
+	(function(exports){
+		var readyList = [];
+		var isReady = false;
+		var ready = function(fn){
+			if(isReady){
+				fn();
+			}else{
+				readyList.push(fn);
+			}
+		};	
+		var doScroll = function(){
+			try{
+				document.documentElement.doScroll('left');
+			}catch(e){
+				setTimeout(doScroll,13);
+				return;
+			}
+			bindReady();
+		};
+		var bindReady = function(){
+			if(isReady){
+				return;
+			}
+			for(var i =0,len = readyList.length;i<len;i++){
+				readyList[i]();
+			}
+			isReady = true;
+		};
+		var DOMContentLoaded;
+		if(document.addEventListener){
+			DOMContentLoaded = function(){
+				document.removeEventListener('DOMContentLoaded',DOMContentLoaded,false);
+				bindReady();
+			};
+		}else if(document.attachEvent){
+			DOMContentLoaded = function(){
+				document.detachEvent('DOMContentLoaded',DOMContentLoaded,false);
+				bindReady();
+			};
+		}
+		if(document.readyState == 'complete'){ 
+			setTimeout(bindReady,0);
+		}else if(document.addEventListener){
+			document.addEventListener('DOMContentLoaded',DOMContentLoaded,false);
+			window.onload = bindReady;
+		}else if(document.attachEvent){
+			//onreadystatechange事件，当页面中iframe时，会等iframe加载完才触发，显然不是我们需要的，所以需要用另外一种方式判断—— document.documentElement.doScroll('left');
+			document.attachEvent('onreadystatechange',function(){
+				if(/loaded|complete/.test(document.readyState)){
+					DOMContentLoaded();
+				}
+			});
+			window.onload = bindReady;
+			var top;
+			try{
+				top = window.frameElement == null;
+			}catch(e){};
+			if(top && document.documentElement.doScroll){
+				doScroll();
+			}
+		}
+		exports.ready = ready;
+	})(window);
+
+	ready(function(){
+		alert('ready');
+	});
+
+
+
+	
+	
+</script>
+</body>
+</html>

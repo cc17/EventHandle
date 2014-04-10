@@ -46,15 +46,41 @@
 	var obj = {};
 	var instance = new EventHandle();
 	instance.on('click',function(){
-		alert('sss');
+		//alert('sss');
 	});
 	instance.once('click',function(){
-		alert('sss');
+		//alert('sss');
 	});
 	instance.fire('click');
 	setTimeout(function(){
 		instance.fire('click');
 	},1000);
+
+	//类式继承
+	var inherit = (function (){
+		var F = function(){};
+		return function(sub,parent){
+			F.prototype = parent.prototype;
+			sub.prototype = new F();
+			sub.prototype.constructor = sub;
+			sub.prototype.__super__ = parent.prototype;
+		};
+	})();
+	function Animate(){
+		//EventHandle.apply(this,arguments);
+		this.__super__.constructor.apply(this,arguments);
+	};
+	inherit(Animate,EventHandle);
+	//Animate.prototype = new EventHandle();
+	Animate.prototype.show = function(){};
+	var cat = new Animate();
+	cat.on('say',function(){
+		alert('I am cat');
+	});
+	cat.fire('say');
+
+
+
 </script>
 </body>
 </html>
